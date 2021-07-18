@@ -1,0 +1,69 @@
+package {{clientPackage}};
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import org.jhapy.dto.serviceQuery.ServiceResult;
+import org.jhapy.dto.serviceQuery.generic.CountAnyMatchingQuery;
+import org.jhapy.dto.serviceQuery.generic.DeleteByIdQuery;
+import org.jhapy.dto.serviceQuery.generic.FindAnyMatchingQuery;
+import org.jhapy.dto.serviceQuery.generic.GetByIdQuery;
+import org.jhapy.dto.serviceQuery.generic.SaveQuery;
+import org.jhapy.dto.utils.Page;
+import org.jhapy.frontend.client.RemoteServiceHandler;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.annotation.Primary;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
+
+import {{dtoPackage}}.{{entityName}};
+
+@FeignClient(name = "${jhapy.remote-services.{{remote-service-name}}.name:null}", url = "${jhapy.remote-services.{{remote-service-name}}.url:}", path = "{{restServicePrefix}}/{{serviceName}}Service")
+@Primary
+public interface {{entityName}}Service extends RemoteServiceHandler {
+
+    @PostMapping(value = "/findAnyMatching")
+    @CircuitBreaker(name = "defaultServiceCircuitBreaker", fallbackMethod = "findAnyMatchingFallback")
+    ServiceResult<Page<{{entityName}}>> findAnyMatching(@RequestBody FindAnyMatchingQuery query);
+
+    default ServiceResult<Page<{{entityName}}>> findAnyMatchingFallback(
+        FindAnyMatchingQuery query, Exception e) {
+      return defaultFallback(getLoggerPrefix("findAnyMatchingFallback"), e, new Page<>());
+    }
+
+    @PostMapping(value = "/countAnyMatching")
+    @CircuitBreaker(name = "defaultServiceCircuitBreaker", fallbackMethod = "countAnyMatchingFallback")
+    ServiceResult<Long> countAnyMatching(@RequestBody CountAnyMatchingQuery query);
+
+    default ServiceResult<Long> countAnyMatchingFallback(
+        CountAnyMatchingQuery query, Exception e) {
+      return defaultFallback(getLoggerPrefix("countAnyMatchingFallback"), e, 0);
+    }
+
+    @PostMapping(value = "/getById")
+    @CircuitBreaker(name = "defaultServiceCircuitBreaker", fallbackMethod = "getByIdFallback")
+    ServiceResult<{{entityName}}> getById(@RequestBody GetByIdQuery query);
+
+    default ServiceResult<{{entityName}}> getByIdFallback(
+        GetByIdQuery query, Exception e) {
+      return defaultFallback(getLoggerPrefix("getByIdFallback"), e, null);
+    }
+
+    @PostMapping(value = "/save")
+    @CircuitBreaker(name = "defaultServiceCircuitBreaker", fallbackMethod = "saveFallback")
+    ServiceResult<{{entityName}}> save(@RequestBody SaveQuery<{{entityName}}> query);
+
+    default ServiceResult<{{entityName}}> saveFallback(
+        SaveQuery<{{entityName}}> query, Exception e) {
+      return defaultFallback(getLoggerPrefix("saveFallback"), e, null);
+    }
+
+    @PostMapping(value = "/delete")
+    @CircuitBreaker(name = "defaultServiceCircuitBreaker", fallbackMethod = "deleteFallback")
+    ServiceResult<Void> delete(@RequestBody DeleteByIdQuery query);
+
+    default ServiceResult<Void> deleteFallback(
+        DeleteByIdQuery query, Exception e) {
+      return defaultFallback(getLoggerPrefix("deleteFallback"), e, null);
+    }
+}

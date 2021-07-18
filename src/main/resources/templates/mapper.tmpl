@@ -1,0 +1,31 @@
+package {{mapperPackage}};
+
+import org.jhapy.baseserver.converter.RelationalDbReferenceMapper;
+import org.jhapy.baseserver.converter.GenericMapper;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Context;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import java.util.Map;
+
+import {{dtoPackage}}.{{entityName}};
+
+@Mapper(componentModel = "spring", uses = RelationalDbReferenceMapper.class)
+public abstract class {{entityName}}Converter extends GenericMapper<{{domainPackage}}.{{entityName}}, {{entityName}}> {
+
+  @Mapping(target = "id", ignore = false)
+  public abstract {{domainPackage}}.{{entityName}} asEntity({{entityName}} dto, @Context Map<String, Object> context);
+
+  @AfterMapping
+  protected void afterConvert({{entityName}} dto,
+      @MappingTarget {{domainPackage}}.{{entityName}} domain,
+      @Context Map<String, Object> context) {
+  }
+
+  @AfterMapping
+    protected void afterConvert({{domainPackage}}.{{entityName}} domain,
+        @MappingTarget {{entityName}} dto,
+        @Context Map<String, Object> context) {
+    }
+}

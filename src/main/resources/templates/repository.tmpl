@@ -1,0 +1,11 @@
+package {{repositoryPackage}};
+
+// import org.javers.spring.annotation.JaversSpringDataAuditable;
+import org.jhapy.baseserver.repository.relationaldb.BaseRepository;
+import org.springframework.stereotype.Repository;
+
+import {{domainPackage}}.{{entityName}};
+
+// @JaversSpringDataAuditable
+@Repository
+public interface {{entityName}}Repository extends BaseRepository<{{entityName}}> {}

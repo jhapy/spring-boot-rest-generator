@@ -1,0 +1,47 @@
+package {{servicePackage}};
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import {{domainPackage}}.{{entityName}};
+import {{repositoryPackage}}.{{entityName}}Repository;
+
+@Service
+@Transactional(readOnly = true)
+public class {{entityName}}ServiceImpl implements {{entityName}}Service {
+
+  private final {{entityName}}Repository {{repositoryName}}Repository;
+  private final EntityManager entityManager;
+
+  public {{entityName}}ServiceImpl( {{entityName}}Repository {{repositoryName}}Repository, EntityManager entityManager ) {
+    this.{{repositoryName}}Repository = {{repositoryName}}Repository;
+    this.entityManager = entityManager;
+  }
+
+	@Override
+  public JpaRepository<{{entityName}}, Long> getRepository() {
+    return {{repositoryName}}Repository;
+  }
+
+  @Override
+  public EntityManager getEntityManager() {
+    return entityManager;
+  }
+
+  @Override
+  public Class<{{entityName}}> getEntityClass() {
+    return {{entityName}}.class;
+  }
+
+  @Override
+    public CriteriaQuery buildSearchQuery(CriteriaQuery query, Root<{{entityName}}> entity,
+        CriteriaBuilder cb, String currentUserId, String filter, Boolean showInactive,
+        Object... otherCriteria) {
+      return null;
+    }
+}
